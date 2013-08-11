@@ -22,10 +22,12 @@ NeoBundle 'a.vim'
 NeoBundle 'vim-easy-align'
 NeoBundle 'arpeggio'
 NeoBundle 'Gundo'
-"NeoBundle 'sensible.vim'
+NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'rainbow_parentheses.vim'
 NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'chriskempson/base16-vim'
+"NeoBundle 'sensible.vim' " default settings
 
 filetype plugin indent on     " Required!
 
@@ -280,8 +282,12 @@ autocmd FileType ocaml source /Users/louisroche/.opam/4.00.1/share/typerex/ocp-i
 set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vimbufsync
 set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vim
 "let g:solarized_termcolors=256
-"set background=light
-colorscheme baskerville
+let base16colorspace=256
+set background=dark
+colorscheme base16-default
+
+set guioptions+=a " use graphic paste
+set guioptions-=lrb " hide the scrollbars
 
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
