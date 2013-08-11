@@ -277,10 +277,10 @@ autocmd InsertLeave * :set relativenumber
 autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd VimEnter * set vb t_vb=
-autocmd FileType ocaml source /Users/louisroche/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
+autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
 
-set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vimbufsync
-set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vim
+set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vimbufsync
+set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vim
 "let g:solarized_termcolors=256
 "let base16colorspace=256
 set background=dark
