@@ -282,9 +282,9 @@ autocmd FileType ocaml source /Users/louisroche/.opam/4.00.1/share/typerex/ocp-i
 set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vimbufsync
 set rtp+=/Users/louisroche/.opam/4.00.1/share/ocamlmerlin/vim
 "let g:solarized_termcolors=256
-let base16colorspace=256
+"let base16colorspace=256
 set background=dark
-colorscheme base16-default
+colorscheme base16-tomorrow
 
 set guioptions+=a " use graphic paste
 set guioptions-=lrb " hide the scrollbars
