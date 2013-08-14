@@ -17,7 +17,6 @@ NeoBundle 'Shougo/vimproc'
 NeoBundle 'SuperTab'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'Command-T'
-NeoBundle 'Lokaltog/powerline'
 NeoBundle 'a.vim'
 NeoBundle 'vim-easy-align'
 NeoBundle 'arpeggio'
@@ -27,6 +26,9 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'rainbow_parentheses.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'chriskempson/base16-vim'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'bling/vim-airline'
+
 "NeoBundle 'sensible.vim' " default settings
 
 filetype plugin indent on     " Required!
@@ -34,9 +36,7 @@ filetype plugin indent on     " Required!
 NeoBundleCheck
 
 " ---------------------------------------------------------------------------
-" Powerline stuff
-let g:Powerline_symbols = 'compatible'
-let g:Powerline_colorscheme = 'skwp'
+" statusline stuff
 set laststatus=2 " Always show the statusline
 set encoding=utf-8 " Necessary to show unicode glyphs
 
@@ -248,13 +248,17 @@ nnoremap <silent> gr "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<CR><c-o>/\w\+\
 " ---------------------------------------------------------------------------
 " Get documentation
 function! OnlineDoc()
-  let s:browser = "firefox"
+  if has("mac")
+    let s:browser = "open"
+  else
+    let s:browser = "firefox"
+  endif
   let s:wordUnderCursor = expand("<cword>")
 
   if &ft == "cpp" || &ft == "c" || &ft == "ruby" || &ft == "php" || &ft == "python" || &ft == "ocaml"
-    let s:url = "http://www.google.com/codesearch?q=".s:wordUnderCursor."+lang:".&ft
+    let s:url = "http://www.google.com/search?q=".s:wordUnderCursor."+lang:".&ft
   elseif &ft == "vim"
-    let s:url = "http://www.google.com/codesearch?q=".s:wordUnderCursor
+    let s:url = "http://www.google.com/search?q=".s:wordUnderCursor
   else
     return
   endif
@@ -269,11 +273,24 @@ endfunction
 map <LocalLeader>k :call OnlineDoc()<CR>
 
 " ---------------------------------------------------------------------------
-" engil
+" vim-airline
+" unicode symbols
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '◀'
+let g:airline_linecolumn_prefix = '␊ '
+let g:airline_branch_prefix = '⎇ '
+let g:airline_paste_symbol = 'ρ'
+let g:airline_whitespace_symbol = 'Ξ'
+let g:airline_enable_syntastic = 1
+set ttimeoutlen=50
+let g:airline_theme='jellybeans'
+
+" ---------------------------------------------------------------------------
+" misc, plz clean this shit
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 
-
+" delete trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd VimEnter * set vb t_vb=
@@ -281,13 +298,21 @@ autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent
 
 set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vimbufsync
 set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vim
-"let g:solarized_termcolors=256
 "let base16colorspace=256
 set background=dark
 colorscheme base16-tomorrow
 
 set guioptions+=a " use graphic paste
 set guioptions-=lrb " hide the scrollbars
+
+au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
+
+let g:syntastic_ocaml_checkers=['merlin']
+
+if !exists('g:neocomplcache_force_omni_patterns')
+  let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
 
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
