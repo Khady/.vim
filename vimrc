@@ -14,7 +14,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " After install, turn shell ~/.vim/bundle/vimproc, (n,g)make -f your_machines_makefile
 NeoBundle 'Shougo/vimproc'
-NeoBundle 'SuperTab'
+NeoBundle 'ervandew/supertab'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'Command-T'
 NeoBundle 'a.vim'
