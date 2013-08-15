@@ -290,6 +290,10 @@ let g:airline_theme='jellybeans'
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 
+" Preserve undo between sessions
+set undofile
+set undodir=~/.vim/undodir
+
 " delete trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
@@ -317,6 +321,13 @@ let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
 nnoremap <F5> :GundoToggle<CR>
+
+" Remap Ctrl-ArrowKeys to switch between split buffers
+nnoremap <silent> <C-Right> <c-w>l
+nnoremap <silent> <C-Left> <c-w>h
+nnoremap <silent> <C-Up> <c-w>k
+nnoremap <silent> <C-Down> <c-w>j
+
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
