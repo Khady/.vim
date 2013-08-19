@@ -26,8 +26,9 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'rainbow_parentheses.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'chriskempson/base16-vim'
-NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundle 'bling/vim-airline'
+NeoBundle 'jpalardy/vim-slime'
 
 "NeoBundle 'sensible.vim' " default settings
 
@@ -248,8 +249,9 @@ nnoremap <silent> gr "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<CR><c-o>/\w\+\
 " ---------------------------------------------------------------------------
 " Get documentation
 function! OnlineDoc()
-  if has("mac")
-    let s:browser = "open"
+  let s:uname = substitute(system('uname'), "\n", "", "")
+  if has("mac") || has("macunix") || has("gui_macvim") || has("gui_mac") || s:uname == "Darwin"
+     let s:browser = "open"
   else
     let s:browser = "firefox"
   endif
@@ -287,27 +289,61 @@ let g:airline_theme='jellybeans'
 
 " ---------------------------------------------------------------------------
 " misc, plz clean this shit
+
+" Source the vimrc file after saving it
+augroup sourcing
+  autocmd!
+  autocmd bufwritepost .vimrc source $MYVIMRC
+augroup END
+
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
 
 " Preserve undo between sessions
 set undofile
 set undodir=~/.vim/undodir
 
+set wildignore=*.o,*~,*.pyc
+set wildignore+=.git\*,.hg\*,.svn\*
+" Show trailing whitespace
+set list
+" But only interesting whitespace
+if &listchars ==# 'eol:$'
+  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+endif
+
 " delete trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd VimEnter * set vb t_vb=
-autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
 
-set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vimbufsync
-set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vim
 "let base16colorspace=256
 set background=dark
 colorscheme base16-tomorrow
 
+" Don't blink normal mode cursor
+set guicursor=n-v-c:block-Cursor
+set guicursor+=n-v-c:blinkon0
+
+" Set extra options when running in GUI mode
+if has("gui_running")
+  set guioptions-=T
+  set guioptions-=e
+  set guitablabel=%M\ %t
+endif
+
 set guioptions+=a " use graphic paste
 set guioptions-=lrb " hide the scrollbars
+
+" ---------------------------------------------------------------------------
+" ocaml
+autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
+
+set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vimbufsync
+set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vim
 
 au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
 
@@ -318,6 +354,11 @@ if !exists('g:neocomplcache_force_omni_patterns')
 endif
 let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
 
+let g:slime_target = "tmux"
+let g:slime_default_config = {"socket_name": "default", "target_pane": "0"}
+
+" ---------------------------------------------------------------------------
+" remap keys
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
 nnoremap <F5> :GundoToggle<CR>
@@ -332,3 +373,10 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Customization
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if filereadable(expand("~/.vimrc.local"))
+  source ~/.vimrc.local
+endif
