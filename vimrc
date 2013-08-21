@@ -72,7 +72,16 @@ set visualbell t_vb=
 set noautowrite                 " don't automatically write on :next, etc
 let maplocalleader=','          " all my macros start with ,
 set wildmenu                    " : menu has tab completion, etc
-set cursorline
+" Highlight cursor line.
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorcolumn
+  au WinLeave * setlocal nocursorline
+  au WinLeave * setlocal nocursorcolumn
+augroup END
+"set cursorline
+"set cursorcolumn
 set scrolloff=5                 " keep at least 5 lines above/below cursor
 set sidescrolloff=5             " keep at least 5 columns left/right of cursor
 set history=300                 " remember the last 300 commands
@@ -227,7 +236,8 @@ map <LocalLeader>bn :bn<cr>
 map <LocalLeader>bp :bp<cr>
 " List open buffers
 map <LocalLeader>bb :ls<cr>
-
+" Close current buffer but not the window
+nmap <localLeader>d :b#<bar>bd#<CR>
 
 " ---------------------------------------------------------------------------
 " dealing with merge conflicts
@@ -355,13 +365,16 @@ endif
 let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
 
 let g:slime_target = "tmux"
-let g:slime_default_config = {"socket_name": "default", "target_pane": "0"}
+let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
+
+autocmd BufWritePre *.ml :call OcpIndentBuffer()
 
 " ---------------------------------------------------------------------------
 " remap keys
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
 nnoremap <F5> :GundoToggle<CR>
+nnoremap <CR> :noh<CR><CR>:<backspace>
 
 " Remap Ctrl-ArrowKeys to switch between split buffers
 nnoremap <silent> <C-Right> <c-w>l
