@@ -17,8 +17,7 @@ NeoBundle 'Shougo/vimproc'
 NeoBundle 'ervandew/supertab'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'Command-T'
-NeoBundle 'a.vim'
-NeoBundle 'vim-easy-align'
+NeoBundle 'Align'
 NeoBundle 'arpeggio'
 NeoBundle 'Gundo'
 NeoBundle 'tpope/vim-fugitive'
@@ -29,7 +28,9 @@ NeoBundle 'chriskempson/base16-vim'
 NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'jpalardy/vim-slime'
+NeoBundle 'tpope/vim-surround'
 
+"NeoBundle 'vim-easy-align' "complex tool to align
 "NeoBundle 'sensible.vim' " default settings
 
 filetype plugin indent on     " Required!
