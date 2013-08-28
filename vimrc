@@ -26,12 +26,13 @@ NeoBundle 'rainbow_parentheses.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'chriskempson/base16-vim'
 NeoBundle 'Shougo/neocomplcache.vim'
-NeoBundle 'bling/vim-airline'
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'tpope/vim-surround'
+NeoBundle 'itchyny/lightline.vim'
 
-"NeoBundle 'vim-easy-align' "complex tool to align
-"NeoBundle 'sensible.vim' " default settings
+"NeoBundle 'bling/vim-airline' " status line
+"NeoBundle 'vim-easy-align'    " complex tool to align
+"NeoBundle 'sensible.vim'      " default settings
 
 filetype plugin indent on     " Required!
 
@@ -286,17 +287,47 @@ endfunction
 map <LocalLeader>k :call OnlineDoc()<CR>
 
 " ---------------------------------------------------------------------------
-" vim-airline
-" unicode symbols
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '◀'
-let g:airline_linecolumn_prefix = '␊ '
-let g:airline_branch_prefix = '⎇ '
-let g:airline_paste_symbol = 'ρ'
-let g:airline_whitespace_symbol = 'Ξ'
-let g:airline_enable_syntastic = 1
-set ttimeoutlen=50
-let g:airline_theme='jellybeans'
+" lightline
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'modified': 'MyModified',
+      \   'fugitive': 'MyFugitive',
+      \   'filename': 'MyFilename',
+      \   'fileformat': 'MyFileformat',
+      \   'filetype': 'MyFiletype',
+      \   'fileencoding': 'MyFileencoding',
+      \ },
+      \ }
+
+function! MyModified()
+  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyFileformat()
+  return winwidth('.') > 70 ? &fileformat : ''
+endfunction
+
+function! MyFileencoding()
+  return winwidth('.') > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+endfunction
+
+function! MyFiletype()
+  return winwidth('.') > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! MyFugitive()
+  return &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head') && strlen(fugitive#head()) ? '⎇ '.fugitive#head() : ''
+endfunction
+
+function! MyMode()
+  return winwidth('.') > 60 ? lightline#mode() : ''
+endfunction
 
 " ---------------------------------------------------------------------------
 " misc, plz clean this shit
