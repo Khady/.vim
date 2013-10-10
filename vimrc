@@ -29,6 +29,8 @@ NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'itchyny/lightline.vim'
+NeoBundle 'tpope/vim-markdown'
+NeoBundle 'def-lkb/ocp-indent-vim'
 
 "NeoBundle 'bling/vim-airline' " status line
 "NeoBundle 'vim-easy-align'    " complex tool to align
@@ -298,15 +300,25 @@ let g:lightline = {
       \ 'component_function': {
       \   'modified': 'MyModified',
       \   'fugitive': 'MyFugitive',
-      \   'filename': 'MyFilename',
       \   'fileformat': 'MyFileformat',
       \   'filetype': 'MyFiletype',
       \   'fileencoding': 'MyFileencoding',
+      \   'mode': 'MyMode',
       \ },
       \ }
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! MyReadonly()
+  if &filetype == "help\|vimfiler\|gundo"
+    return ""
+  elseif &readonly
+    return "RO"
+  else
+    return ""
+  endif
 endfunction
 
 function! MyFileformat()
@@ -322,7 +334,7 @@ function! MyFiletype()
 endfunction
 
 function! MyFugitive()
-  return &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head') && strlen(fugitive#head()) ? '⎇ '.fugitive#head() : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && exists('*fugitive#head') && strlen(fugitive#head()) ? '⎇ '.fugitive#head() : ''
 endfunction
 
 function! MyMode()
@@ -354,7 +366,7 @@ set wildignore+=.git\*,.hg\*,.svn\*
 set list
 " But only interesting whitespace
 if &listchars ==# 'eol:$'
-  set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+  set listchars=tab:·\ ,trail:-,extends:>,precedes:<,nbsp:+
 endif
 
 " delete trailing whitespace
@@ -384,8 +396,9 @@ set guioptions-=lrb " hide the scrollbars
 " ocaml
 autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
 
-set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vimbufsync
-set rtp+=~/.opam/4.00.1/share/ocamlmerlin/vim
+let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
+execute "set rtp+=".s:ocamlmerlin."/vim"
+execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
 
 au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
 
@@ -406,6 +419,7 @@ autocmd BufWritePre *.ml :call OcpIndentBuffer()
 map <c-t> :TypeOf<CR>
 vmap <c-t> :TypeOfSel<CR>
 nnoremap <F5> :GundoToggle<CR>
+" delete hl at the end of a research
 nnoremap <CR> :noh<CR><CR>:<backspace>
 
 " Remap Ctrl-ArrowKeys to switch between split buffers
