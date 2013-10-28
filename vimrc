@@ -292,7 +292,7 @@ map <LocalLeader>k :call OnlineDoc()<CR>
 " lightline
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'solarized_light',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
@@ -375,8 +375,10 @@ autocmd BufWritePre * :%s/\s\+$//e
 autocmd VimEnter * set vb t_vb=
 
 "let base16colorspace=256
-set background=dark
+"set background=dark
+set background=light
 colorscheme base16-tomorrow
+"colorscheme base16-solarized
 
 " Don't blink normal mode cursor
 set guicursor=n-v-c:block-Cursor
