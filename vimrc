@@ -72,6 +72,9 @@ set autoread                    " watch for file changes by other programs
 set vb t_vb=
 set visualbell t_vb=
 
+" we don't want vim to erase the background
+set t_ut=
+
 ":set patchmode=~                " only produce *~ if not there
 set noautowrite                 " don't automatically write on :next, etc
 let maplocalleader=','          " all my macros start with ,
@@ -353,6 +356,7 @@ augroup END
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 
+
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
@@ -360,8 +364,10 @@ set ffs=unix,dos,mac
 set undofile
 set undodir=~/.vim/undodir
 
+set wildmode=list:longest,full
 set wildignore=*.o,*~,*.pyc
 set wildignore+=.git\*,.hg\*,.svn\*
+set wildignore+=*.a,*.annot,*.spot,*.native,*.spit,*.exe,*.git,*.d,_build
 " Show trailing whitespace
 set list
 " But only interesting whitespace
@@ -404,6 +410,11 @@ execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
 
 au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
 
+"" syntastic
+let g:syntastic_auto_loc_list=1
+let g:syntastic_quiet_warnings=1
+
+let g:syntastic_error_symbol='✗'
 let g:syntastic_ocaml_checkers=['merlin']
 
 if !exists('g:neocomplcache_force_omni_patterns')
@@ -414,7 +425,26 @@ let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
 let g:slime_target = "tmux"
 let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
 
-autocmd BufWritePre *.ml :call OcpIndentBuffer()
+"autocmd BufWritePre *.ml :call OcpIndentBuffer()
+nnoremap <c-i> :call OcpIndentBuffer()<CR>
+
+"" smartinput
+
+" we don't want double backquotes when we try to insert a polymorphic variant
+call smartinput#define_rule({
+\   'at': '\%#',
+\   'char': '`',
+\   'input': '`',
+\   'filetype': ['ocaml']
+\ })
+
+" quotes are used principaly to insert type variables, less for char constants
+call smartinput#define_rule({
+\   'at': '\%#',
+\   'char': '''',
+\   'input': '''',
+\   'filetype': ['ocaml']
+\ })
 
 " ---------------------------------------------------------------------------
 " remap keys
