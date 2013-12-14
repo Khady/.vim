@@ -356,7 +356,6 @@ augroup END
 autocmd InsertEnter * :set number
 autocmd InsertLeave * :set relativenumber
 
-
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
@@ -399,6 +398,8 @@ endif
 
 set guioptions+=a " use graphic paste
 set guioptions-=lrb " hide the scrollbars
+
+set mouse=a
 
 " ---------------------------------------------------------------------------
 " ocaml
