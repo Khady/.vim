@@ -402,7 +402,8 @@ if has("gui_running")
   set guitablabel=%M\ %t
   set background=dark
   colorscheme base16-tomorrow
-  if has("linux")
+  let s:uname = substitute(system('uname'), "\n", "", "")
+  if !s:uname == "Darwin"
     set guifont=DejaVu\ Sans\ Mono\ 9
   endif
 else
