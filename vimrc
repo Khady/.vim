@@ -31,6 +31,7 @@ NeoBundle 'tpope/vim-surround'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'def-lkb/ocp-indent-vim'
+NeoBundle 'klen/python-mode'
 
 "NeoBundle 'bling/vim-airline' " status line
 "NeoBundle 'vim-easy-align'    " complex tool to align
@@ -294,8 +295,16 @@ map <LocalLeader>k :call OnlineDoc()<CR>
 " ---------------------------------------------------------------------------
 " lightline
 
+if has("gui_running")
+  let g:lightlineColor = "Tomorrow_Night"
+else
+  let g:lightlineColor = "solarized_dark"
+endif
+
+"      \ 'colorscheme': 'Tomorrow_Night',
+"      \ 'colorscheme': s:lightlineColor,
 let g:lightline = {
-      \ 'colorscheme': 'solarized_light',
+      \ 'colorscheme': g:lightlineColor,
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
@@ -379,21 +388,23 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd VimEnter * set vb t_vb=
 
-"let base16colorspace=256
-"set background=dark
-set background=light
-colorscheme base16-tomorrow
-"colorscheme base16-solarized
-
 " Don't blink normal mode cursor
 set guicursor=n-v-c:block-Cursor
 set guicursor+=n-v-c:blinkon0
+
+let base16colorspace=256
 
 " Set extra options when running in GUI mode
 if has("gui_running")
   set guioptions-=T
   set guioptions-=e
   set guitablabel=%M\ %t
+  set background=dark
+  colorscheme base16-tomorrow
+  set guifont=DejaVu\ Sans\ Mono\ 9
+else
+  set background=dark
+  colorscheme solarized
 endif
 
 set guioptions+=a " use graphic paste
@@ -403,8 +414,18 @@ set mouse=a
 
 " ---------------------------------------------------------------------------
 " ocaml
-autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
 
+let g:ocp_indent_vimfile = system("opam config var share")
+let g:ocp_indent_vimfile = substitute(g:ocp_indent_vimfile, '[\r\n]*$', '', '')
+let g:ocp_indent_vimfile = g:ocp_indent_vimfile . "/vim/syntax/ocp-indent.vim"
+
+autocmd FileType ocaml exec ":source " . g:ocp_indent_vimfile
+
+
+"execute "autocmd FileType ocaml source ".opamprefix."/share/typerex/ocp-indent/ocp-indent.vim"
+"autocmd FileType ocaml source ~/.opam/4.00.1/share/typerex/ocp-indent/ocp-indent.vim
+
+let opamprefix=system("opam config var prefix | tr -d '\n'")
 let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
 execute "set rtp+=".s:ocamlmerlin."/vim"
 execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
@@ -428,7 +449,7 @@ let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
 
 "autocmd BufWritePre *.ml :call OcpIndentBuffer()
 nnoremap <c-i> :call OcpIndentBuffer()<CR>
-
+"
 "" smartinput
 
 " we don't want double backquotes when we try to insert a polymorphic variant
