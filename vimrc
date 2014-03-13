@@ -25,6 +25,7 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'rainbow_parentheses.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'chriskempson/base16-vim'
+NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'Shougo/neocomplcache.vim'
 NeoBundle 'jpalardy/vim-slime'
 NeoBundle 'tpope/vim-surround'
@@ -401,9 +402,11 @@ if has("gui_running")
   set guitablabel=%M\ %t
   set background=dark
   colorscheme base16-tomorrow
-  set guifont=DejaVu\ Sans\ Mono\ 9
+  if has("linux")
+    set guifont=DejaVu\ Sans\ Mono\ 9
+  endif
 else
-  set background=dark
+  set background=light
   colorscheme solarized
 endif
 
