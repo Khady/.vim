@@ -7,7 +7,8 @@ if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#rc(expand('~/.vim/bundle/'))
+" call neobundle#rc(expand('~/.vim/bundle/'))
+call neobundle#begin(expand('~/.vim/bundle/'))
 
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
@@ -15,7 +16,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " After install, turn shell ~/.vim/bundle/vimproc, (n,g)make -f your_machines_makefile
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'ervandew/supertab'
-NeoBundle 'scrooloose/syntastic'
+" NeoBundle 'scrooloose/syntastic'
 NeoBundle 'Command-T'
 NeoBundle 'Align'
 NeoBundle 'arpeggio'
@@ -33,10 +34,13 @@ NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'def-lkb/ocp-indent-vim'
 NeoBundle 'klen/python-mode'
+NeoBundle 'w0rp/ale'
 
 "NeoBundle 'bling/vim-airline' " status line
 "NeoBundle 'vim-easy-align'    " complex tool to align
 "NeoBundle 'sensible.vim'      " default settings
+
+call neobundle#end()
 
 filetype plugin indent on     " Required!
 
@@ -299,7 +303,8 @@ map <LocalLeader>k :call OnlineDoc()<CR>
 if has("gui_running")
   let g:lightlineColor = "Tomorrow_Night"
 else
-  let g:lightlineColor = "solarized_dark"
+  let g:lightlineColor = "Tomorrow_Night"
+  " let g:lightlineColor = "solarized_dark"
 endif
 
 "      \ 'colorscheme': 'Tomorrow_Night',
@@ -408,7 +413,8 @@ if has("gui_running")
   endif
 else
   set background=light
-  colorscheme solarized
+  colorscheme baskerville
+"  colorscheme solarized
 endif
 
 set guioptions+=a " use graphic paste
@@ -419,36 +425,47 @@ set mouse=a
 " ---------------------------------------------------------------------------
 " ocaml
 
-let g:ocp_indent_vimfile = system("opam config var share")
-let g:ocp_indent_vimfile = substitute(g:ocp_indent_vimfile, '[\r\n]*$', '', '')
-let g:ocp_indent_vimfile = g:ocp_indent_vimfile . "/vim/syntax/ocp-indent.vim"
+let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
 
-autocmd FileType ocaml exec ":source " . g:ocp_indent_vimfile
 
-let opamprefix=system("opam config var prefix | tr -d '\n'")
-let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
-execute "set rtp+=".s:ocamlmerlin."/vim"
-execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+"if executable('ocp-indent') && executable('ocamlmerlin') && has('python')
+"    let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+"    exec 'set rtp+=' . g:opamshare . '/ocp-indent/vim'
+"    exec 'set rtp+=' . g:opamshare . '/merlin/vim'
+"    let g:syntastic_ocaml_checkers = ['merlin']
+"endif
 
-au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
-
-"" syntastic
-let g:syntastic_auto_loc_list=1
-let g:syntastic_quiet_warnings=1
-
-let g:syntastic_error_symbol='✗'
-let g:syntastic_ocaml_checkers=['merlin']
-
-if !exists('g:neocomplcache_force_omni_patterns')
-  let g:neocomplcache_force_omni_patterns = {}
-endif
-let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
-
-let g:slime_target = "tmux"
-let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
-
-"autocmd BufWritePre *.ml :call OcpIndentBuffer()
-nnoremap <c-i> :call OcpIndentBuffer()<CR>
+"let g:ocp_indent_vimfile = system("opam config var share")
+"let g:ocp_indent_vimfile = substitute(g:ocp_indent_vimfile, '[\r\n]*$', '', '')
+"let g:ocp_indent_vimfile = g:ocp_indent_vimfile . "/vim/syntax/ocp-indent.vim"
+"
+"autocmd FileType ocaml exec ":source " . g:ocp_indent_vimfile
+"
+"let opamprefix=system("opam config var prefix | tr -d '\n'")
+"let s:ocamlmerlin=substitute(system('opam config var share'),'\n$','','''') .  "/ocamlmerlin"
+"execute "set rtp+=".s:ocamlmerlin."/vim"
+"execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+"
+"au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
+"
+""" syntastic
+"let g:syntastic_auto_loc_list=1
+"let g:syntastic_quiet_warnings=1
+"
+"let g:syntastic_error_symbol='✗'
+"let g:syntastic_ocaml_checkers=['merlin']
+"
+"if !exists('g:neocomplcache_force_omni_patterns')
+"  let g:neocomplcache_force_omni_patterns = {}
+"endif
+"let g:neocomplcache_force_omni_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
+"
+"let g:slime_target = "tmux"
+"let g:slime_default_config = {"socket_name": "default", "target_pane": "1"}
+"
+""autocmd BufWritePre *.ml :call OcpIndentBuffer()
+"nnoremap <c-i> :call OcpIndentBuffer()<CR>
 "
 "" smartinput
 
